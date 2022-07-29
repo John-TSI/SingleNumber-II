@@ -1,11 +1,13 @@
-#include<numeric>
-#include<algorithm>
+#include<numeric>  // std::accumulate
+#include<algorithm>  // std::min
+#include<cmath>  // std::abs
 #include"../inc/solution.hpp"
 
 
 int Solution::singleNumber(std::vector<int>& nums)
 {
-    // --- solution one ---
+    // --- solution one : subtraction ---
+/*     
     if(nums.size() == 1){ return nums[0]; }
 
     auto minIt = std::min_element(nums.begin(),nums.end());
@@ -18,37 +20,20 @@ int Solution::singleNumber(std::vector<int>& nums)
         std::find(nums.begin(), nums.end(), solo) == nums.end() || 
         std::count(nums.begin(), nums.end(), solo) > 1 
     );
-
     return solo; 
+*/ 
 
 
-    // --- solution two : inconsistent, fails when tripletCount > 2 ---
-/*     
-    int count = nums.size(); 
-    nums.erase(std::remove(nums.begin(),nums.end(), 0), nums.end() );
-    if(nums.size() == count-1){ return 0; }
-    if(nums.size() == 1){ return nums[0]; }
-    count = nums.size();
+    // --- solution two : bit manipulation ---
+    int solo{0}, shift{1};  // 'shift' will act as the comparator for bitwise and operation 
 
-    int tripletCount = (count-1)/3, bits{0}, tmp{0}, startIdx{0};
-    while(tripletCount)
+    for(int bit{0}; bit<32; ++bit)  // iterate over the bits of the numbers
     {
-        bool erased{false}; 
-        for(int i{startIdx}; i<count; ++i)
-        {
-            tmp = bits;
-            bits ^= nums[i];
-            if(!bits)
-            { 
-                bits = tmp; nums.erase(nums.begin()+i); erased = true; 
-                --count; --tripletCount; startIdx=i; 
-                break; 
-            }
-        }
-        if(!erased){ startIdx = 0; }
+        int bitCount{0}; 
+        for(int num : nums){ bitCount += (num & shift) ? 1 : 0; }  // count how many numbers in nums set each bit
+        // each bit will be set at least thrice if in a triplicate num, if non-zero after mod 3 then must be set in solo too  
+        solo += (bitCount % 3) ? shift : 0;
+        shift <<= 1;  // bitshift left the comparator value before next loop iteration
     }
-    bits = 0;
-    for(int num : nums){ bits ^= num; }
-    return bits; 
-*/
+    return solo;
 }
