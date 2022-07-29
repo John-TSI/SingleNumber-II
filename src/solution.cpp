@@ -6,7 +6,6 @@
 int Solution::singleNumber(std::vector<int>& nums)
 {
     // --- solution one ---
-/*     
     if(nums.size() == 1){ return nums[0]; }
 
     auto minIt = std::min_element(nums.begin(),nums.end());
@@ -14,13 +13,17 @@ int Solution::singleNumber(std::vector<int>& nums)
     int total = std::accumulate(nums.begin(),nums.end(),0);
 
     do{ solo = total - 3*(sumOfTriplets++); } 
-    while( std::find(nums.begin(), nums.end(), solo) == nums.end() );
+    while
+    ( 
+        std::find(nums.begin(), nums.end(), solo) == nums.end() || 
+        std::count(nums.begin(), nums.end(), solo) > 1 
+    );
 
     return solo; 
- */
 
 
-    // --- solution two ---
+    // --- solution two : inconsistent, fails when tripletCount > 2 ---
+/*     
     int count = nums.size(); 
     nums.erase(std::remove(nums.begin(),nums.end(), 0), nums.end() );
     if(nums.size() == count-1){ return 0; }
@@ -30,7 +33,7 @@ int Solution::singleNumber(std::vector<int>& nums)
     int tripletCount = (count-1)/3, bits{0}, tmp{0}, startIdx{0};
     while(tripletCount)
     {
-        bool erased{false};
+        bool erased{false}; 
         for(int i{startIdx}; i<count; ++i)
         {
             tmp = bits;
@@ -46,5 +49,6 @@ int Solution::singleNumber(std::vector<int>& nums)
     }
     bits = 0;
     for(int num : nums){ bits ^= num; }
-    return bits;
+    return bits; 
+*/
 }
